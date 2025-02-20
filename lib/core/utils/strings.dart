@@ -22,4 +22,25 @@ class AppStrings {
   static const String wrongPassword = "wrong-password";
   static const String weakPassword = "weak-password";
   static const String emailAlreadyInUse = "email-already-in-use";
+  static const String userDisabled = "user-disabled";
+  /////////////////////Home Strings/////////////////////
+  static const String updating = 'Updating...';
+  static const String humidity = 'Humidity';
+  static const String rain = 'Rain';
+  static const String uv = 'UV';
+  static const String hello = 'Hello';
+  ///////////get weather Error messages///////////////
+  static const String badRequestMessage = 'Bad request. Please try again.';
+  static const String unauthorizedAccessMessage =
+      'Unauthorized access. Please check your login.';
+  static const String locationNotFoundMessage =
+      'Location not found. Try another city.';
+  static const String serverErrorMessage =
+      'Server error! Please try again later.';
+  static const String connectionTimeoutMessage =
+      'Connection timed out. Please check your internet!';
+  static const String receiveTimeoutMessage =
+      'The server did not respond in time!';
+  static const String requestCancelledMessage = 'Request was cancelled!';
+  static const String unexpectedErrorMessage = 'An unexpected error occurred!';
 }

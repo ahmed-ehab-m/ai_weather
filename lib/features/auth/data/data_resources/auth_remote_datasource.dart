@@ -51,7 +51,6 @@ class AuthRemoteDatasource {
       if (e.code == AppStrings.wrongPassword) {
         throw ServerException(AppStrings.wrongPassword);
       } else {
-        print(e.toString());
         throw ServerException(e.toString());
       }
     } catch (e) {

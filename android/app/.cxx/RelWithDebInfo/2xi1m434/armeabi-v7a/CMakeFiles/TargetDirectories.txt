@@ -1,0 +1,2 @@
+D:/Cellula InternShip/ai_weather/android/app/.cxx/RelWithDebInfo/2xi1m434/armeabi-v7a/CMakeFiles/edit_cache.dir
+D:/Cellula InternShip/ai_weather/android/app/.cxx/RelWithDebInfo/2xi1m434/armeabi-v7a/CMakeFiles/rebuild_cache.dir

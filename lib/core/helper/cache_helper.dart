@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CacheHelper {
   final SharedPreferences prefs;
   CacheHelper(this.prefs);
-  @override
+
   Future<void> cacheUserData({required UserModel user}) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -17,7 +17,6 @@ class CacheHelper {
     }
   }
 
-  @override
   Future<UserModel?>? getUserData() async {
     try {
       final prefs = await SharedPreferences.getInstance();

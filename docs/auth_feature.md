@@ -10,7 +10,7 @@
 
 ###  2-Domain Layer
 ### Contains BusinessLogic 
- `AuthRepository` => Abstracrt Repositry Interface
+ `AuthRepository` => Abstract Repositry Interface
  `LoginUseCase` → Handles user login.
  `SignUpUseCase` → Handles user registration.
 
