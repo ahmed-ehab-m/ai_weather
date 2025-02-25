@@ -1,20 +1,15 @@
+import 'package:ai_weather/features/home/domain/entities/base_weather_entity.dart';
 import 'package:ai_weather/features/home/domain/entities/forecast_weather_entity.dart';
 
-class WeatherEntity {
-  final double temp;
-  final int humidity;
-  final String condition;
-  final double uv;
-  final double rain;
-  final String location;
+class WeatherEntity extends BaseWeatherEntity {
   final List<ForecastEntity> forecast;
-
+  final String location;
   WeatherEntity(
-      {required this.forecast,
-      required this.location,
-      required this.rain,
-      required this.uv,
-      required this.condition,
-      required this.temp,
-      required this.humidity});
+      {required this.location,
+      required this.forecast,
+      required super.rain,
+      required super.uv,
+      required super.condition,
+      required super.temp,
+      required super.humidity});
 }

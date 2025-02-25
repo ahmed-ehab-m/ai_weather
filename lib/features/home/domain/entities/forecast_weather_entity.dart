@@ -1,22 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:ai_weather/features/home/domain/entities/base_weather_entity.dart';
 
-class ForecastEntity {
-  final String day;
-  final double averageTemp;
-  final int averageHumidity;
-  final double uv;
-  final double rainChance;
-  final String condition;
-  Color? color;
-
+class ForecastEntity extends BaseWeatherEntity {
   ForecastEntity({
-    this.color,
-    required this.day,
-    required this.averageTemp,
-    required this.averageHumidity,
-    required this.uv,
-    required this.rainChance,
-    required this.condition,
-    required String date,
+    required super.temp,
+    required super.humidity,
+    required super.rain,
+    required super.condition,
+    required super.uv,
   });
 }

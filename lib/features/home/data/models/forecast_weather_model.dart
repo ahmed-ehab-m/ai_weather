@@ -1,39 +1,29 @@
+import 'package:ai_weather/features/home/domain/entities/base_weather_entity.dart';
 import 'package:ai_weather/features/home/domain/entities/forecast_weather_entity.dart';
 
-class ForecastWeatherModel {
-  final String date;
-  final double averageTemp;
-  final int averageHumidity;
-  final String condition;
-  final double uv;
-  final int rainChance;
-
+class ForecastWeatherModel extends BaseWeatherEntity {
   ForecastWeatherModel(
-      {required this.date,
-      required this.averageTemp,
-      required this.averageHumidity,
-      required this.condition,
-      required this.uv,
-      required this.rainChance});
+      {required super.temp,
+      required super.humidity,
+      required super.condition,
+      required super.uv,
+      required super.rain});
 
   factory ForecastWeatherModel.fromJson(Map<String, dynamic> json) =>
       ForecastWeatherModel(
-        averageTemp: json['day']['avgtemp_c'].toDouble(),
-        averageHumidity: json['day']['avghumidity'],
+        temp: json['day']['avgtemp_c'].toDouble(),
+        humidity: json['day']['avghumidity'],
         condition: json['day']['condition']['text'],
         uv: json['day']['uv'],
-        rainChance: json['day']['daily_chance_of_rain'],
-        date: json['date'],
+        rain: json['day']['daily_chance_of_rain'],
       );
 
   ForecastEntity toEntity() {
     return ForecastEntity(
-        rainChance: rainChance.toDouble(),
+        rain: rain,
         condition: condition,
         uv: uv,
-        date: date,
-        day: date,
-        averageTemp: averageTemp,
-        averageHumidity: averageHumidity);
+        temp: temp.toDouble(),
+        humidity: humidity);
   }
 }

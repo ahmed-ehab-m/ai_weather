@@ -9,6 +9,7 @@ import 'package:ai_weather/features/auth/presentation/controller/auth_cubit/auth
 import 'package:ai_weather/features/home/data/data_resource/remote_data_resource.dart';
 import 'package:ai_weather/features/home/data/repositries/remote_data_resource_impl.dart';
 import 'package:ai_weather/features/home/domain/repo_interface/weather_repositry.dart';
+import 'package:ai_weather/features/home/domain/use_cases/get_predictions_usecase.dart';
 import 'package:ai_weather/features/home/domain/use_cases/get_weather_usecase.dart';
 import 'package:ai_weather/features/home/presentation/controller/weather_cubit/weather_cubit.dart';
 import 'package:dio/dio.dart';
@@ -58,8 +59,10 @@ Future<void> setupLocator() async {
   );
   sl.registerLazySingleton<GetWeatherUseCase>(
       () => GetWeatherUseCaseImpl(sl()));
-
+  sl.registerLazySingleton<GetPredictionUseCase>(
+      () => GetPredictionUseCaseImpl(sl()));
   sl.registerLazySingleton<WeatherCubit>(() => WeatherCubit(
+        sl(),
         sl(),
       ));
 }

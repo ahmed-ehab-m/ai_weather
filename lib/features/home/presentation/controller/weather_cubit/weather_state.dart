@@ -18,3 +18,16 @@ final class GetWeatherFailure extends WeatherState {
 }
 
 final class GetWeatherChanged extends WeatherState {}
+//////////////////////////////////////////
+
+final class GetPerdictionLoading extends WeatherState {}
+
+final class GetPerdictionSuccess extends WeatherState {
+  final Map<String, dynamic> result;
+  GetPerdictionSuccess({required this.result});
+}
+
+final class GetPerdictionFailure extends WeatherState {
+  final String message;
+  GetPerdictionFailure({required this.message});
+}

@@ -3,8 +3,10 @@ import 'package:ai_weather/core/helper/cache_helper.dart';
 import 'package:ai_weather/core/helper/functions/custom_snack_bar.dart';
 import 'package:ai_weather/core/helper/screen_size_helper.dart';
 import 'package:ai_weather/core/location/get_location.dart';
+import 'package:ai_weather/core/styles/text_styles.dart';
 import 'package:ai_weather/core/utils/constants.dart';
 import 'package:ai_weather/core/utils/strings.dart';
+import 'package:ai_weather/features/home/domain/entities/base_weather_entity.dart';
 import 'package:ai_weather/features/home/domain/entities/current_weather_entity.dart';
 import 'package:ai_weather/features/home/presentation/controller/weather_cubit/weather_cubit.dart';
 import 'package:ai_weather/features/home/presentation/views/widgets/forcast_days_list.dart';
@@ -25,6 +27,11 @@ class _HomeViewBodyState extends State<HomeViewBody> {
   String userName = "";
   WeatherEntity? weather;
   Color color = Colors.blue;
+  Map<String, dynamic>? result;
+  List<int> features = [];
+  String? predictionText;
+  final weatherCubit = sl<WeatherCubit>();
+
   @override
   void initState() {
     super.initState();
@@ -34,7 +41,7 @@ class _HomeViewBodyState extends State<HomeViewBody> {
 
   Future<void> fetchWeatherData() async {
     String position = await GetLocation.getCurrentLocation();
-    await sl<WeatherCubit>().getCurrentWeather(
+    await weatherCubit.getCurrentWeather(
       position,
     );
   }
@@ -57,27 +64,43 @@ class _HomeViewBodyState extends State<HomeViewBody> {
         }
         if (state is GetWeatherSuccess) {
           weather = state.weatherEntity;
-          color = BlocProvider.of<WeatherCubit>(context)
-              .getThemeColor(weather?.condition ?? '');
+
+          features = BaseWeatherEntity.feature(weather!);
+          weatherCubit.getPrediction(features);
+          color = weatherCubit.getThemeColor(weather?.condition ?? '');
         }
         if (state is GetWeatherChanged) {
-          color = BlocProvider.of<WeatherCubit>(context).getThemeColor(
-              sl<WeatherCubit>().selectedDayIndex == 0
-                  ? weather?.condition ?? ''
-                  : weather
-                      ?.forecast[BlocProvider.of<WeatherCubit>(context)
-                          .selectedDayIndex]
-                      .condition);
+          color = weatherCubit.getThemeColor(weatherCubit.selectedDayIndex == 0
+              ? weather?.condition ?? ''
+              : weather?.forecast[weatherCubit.selectedDayIndex].condition);
+          features = BaseWeatherEntity.feature(
+              weatherCubit.selectedDayIndex == 0
+                  ? weather!
+                  : weather!.forecast[weatherCubit.selectedDayIndex]);
+          sl<WeatherCubit>().getPrediction(features);
+        }
+        if (state is GetPerdictionLoading) {}
+        if (state is GetPerdictionFailure) {
+          showSnackBar(context, message: state.message, color: Colors.red);
+        }
+        if (state is GetPerdictionSuccess) {
+          result = state.result;
+          predictionText = result!['prediction'][0] == 0
+              ? AppStrings.badWeather
+              : AppStrings.goodWeather;
         }
       },
       builder: (context, state) {
-        final cubit = sl<WeatherCubit>();
+        final isToday = weatherCubit.selectedDayIndex == 0;
+        final selectedWeather = isToday
+            ? weather
+            : weather?.forecast[weatherCubit.selectedDayIndex];
         return RefreshIndicator(
           color: Colors.white,
           backgroundColor: kPrimaryColor,
           onRefresh: () async {
             await fetchWeatherData();
-            cubit.changeSelectedDay(0);
+            weatherCubit.changeSelectedDay(0);
           },
           child: Container(
             decoration: BoxDecoration(
@@ -105,30 +128,17 @@ class _HomeViewBodyState extends State<HomeViewBody> {
                       ForcastDaysList(
                         //////////////////////////////////////
                         onTap: (index) async {
-                          cubit.changeSelectedDay(index);
+                          weatherCubit.changeSelectedDay(index);
                         },
-                        selectedIndex: sl<WeatherCubit>().selectedDayIndex,
+                        selectedIndex: weatherCubit.selectedDayIndex,
 
                         /////////////////////////////////////
                       ),
                       Center(
                         child: TempertureItem(
-                          temp: sl<WeatherCubit>().selectedDayIndex == 0
-                              ? weather?.temp.truncate().toString() ?? '_'
-                              : weather
-                                      ?.forecast[
-                                          sl<WeatherCubit>().selectedDayIndex]
-                                      .averageTemp
-                                      .truncate()
-                                      .toString() ??
-                                  '_',
-                          type: sl<WeatherCubit>().selectedDayIndex == 0
-                              ? weather?.condition ?? '_'
-                              : weather
-                                      ?.forecast[
-                                          sl<WeatherCubit>().selectedDayIndex]
-                                      .condition ??
-                                  '_',
+                          temp: selectedWeather?.temp.truncate().toString() ??
+                              '_',
+                          type: selectedWeather?.condition ?? '',
                         ),
                       ),
                       Row(
@@ -136,37 +146,21 @@ class _HomeViewBodyState extends State<HomeViewBody> {
                         children: [
                           DetailsItem(
                             type: AppStrings.humidity,
-                            value: sl<WeatherCubit>().selectedDayIndex == 0
-                                ? weather?.humidity.truncate() ?? 0
-                                : weather
-                                        ?.forecast[
-                                            sl<WeatherCubit>().selectedDayIndex]
-                                        .averageHumidity
-                                        .truncate() ??
-                                    0,
+                            value: selectedWeather?.humidity ?? 0,
                           ),
                           DetailsItem(
                             type: AppStrings.uv,
-                            value: sl<WeatherCubit>().selectedDayIndex == 0
-                                ? weather?.uv.truncate() ?? 0
-                                : weather
-                                        ?.forecast[
-                                            sl<WeatherCubit>().selectedDayIndex]
-                                        .uv
-                                        .truncate() ??
-                                    0,
+                            value: selectedWeather?.uv.truncate() ?? 0,
                           ),
                           DetailsItem(
-                              type: AppStrings.rain,
-                              value: sl<WeatherCubit>().selectedDayIndex == 0
-                                  ? weather?.rain.truncate() ?? 0
-                                  : weather
-                                          ?.forecast[sl<WeatherCubit>()
-                                              .selectedDayIndex]
-                                          .rainChance
-                                          .truncate() ??
-                                      0),
+                            type: AppStrings.rain,
+                            value: selectedWeather?.rain ?? 0,
+                          ),
                         ],
+                      ),
+                      Center(
+                        child: Text(predictionText ?? '',
+                            style: AppTextStyles.textStyle18),
                       ),
                     ],
                   ),

@@ -43,4 +43,8 @@ class AppStrings {
       'The server did not respond in time!';
   static const String requestCancelledMessage = 'Request was cancelled!';
   static const String unexpectedErrorMessage = 'An unexpected error occurred!';
+  //////////////////////////////////////////
+  static const String badWeather =
+      "🌧️ The weather is bad, better stay inside!";
+  static const String goodWeather = "☀️ The weather is nice, you can go out!";
 }
